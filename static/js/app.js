@@ -1,33 +1,45 @@
 //func to get metadata and populate it
 function buildMetadata(sample) {
-  Plotly.d3.json(`/metadata/${sample}`, function(error, response){
+  Plotly.d3.json(`/metadata/${sample}`, function(error, response) {
     if (error) {alert(error)}
     else {
-      var data = response;
       var selector = d3.select('#sample-metadata');
       selector.html("")
       var keys = ["ETHNICITY", "GENDER", "AGE", "LOCATION", "BBTYPE", 
                     "WFREQ", "sample"];
       keys.forEach((key) => {
-        var ul = selector.append('ul')
-        var li = ul.append('li')
-        li.text(`${key}: ${data[key]}`)
+        var ul = selector.append('ul');
+        var li = ul.append('li');
+        li.text(`${key}: ${response[key]}`)
       })
     }
   })
 }
 
+//func to build charts
 function buildCharts(sample) {
+  Plotly.d3.json(`/samples/${sample}`, function(error, response) { 
+    if (error) {alert(error)}
+    else {
+      var labels = response.otu_ids.slice(0,10);
+      var values = response.sample_values.slice(0,10);
+      var hovers = response.otu_labels.slice(0,10);
 
-  // @TODO: Use `d3.json` to fetch the sample data for the plots
+      var data = [{
+        values: values,
+        labels: labels,
+        type: 'pie',
+        text: hovers,
+        hoverinfo: 'label+text+value+percent',
+        textinfo: 'percent'
+      }];
 
-    // @TODO: Build a Bubble Chart using the sample data
-
-    // @TODO: Build a Pie Chart
-    // HINT: You will need to use slice() to grab the top 10 sample_values,
-    // otu_ids, and labels (10 each).
+      Plotly.newPlot("pie", data)
+    }
+  }) 
 }
 
+//func that is ran when page loads
 function init() {
   // Grab a reference to the dropdown select element
   var selector = d3.select("#selDataset");
@@ -48,6 +60,7 @@ function init() {
   });
 }
 
+//func used to get generate metadata and charts when selection is changes
 function optionChanged(newSample) {
   // Fetch new data each time a new sample is selected
   buildCharts(newSample);
@@ -55,4 +68,4 @@ function optionChanged(newSample) {
 }
 
 // Initialize the dashboard
-init();
+init()
