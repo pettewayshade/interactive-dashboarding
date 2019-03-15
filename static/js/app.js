@@ -16,7 +16,7 @@ function buildMetadata(sample) {
   })
 }
 
-//func to build charts
+//func to build bubble and pie chart
 function buildCharts(sample) {
   Plotly.d3.json(`/samples/${sample}`, function(error, response) { 
     if (error) {alert(error)}
@@ -43,12 +43,11 @@ function buildCharts(sample) {
             colorscale: "Earth",
         }
       }]  
-      
+
         Plotly.newPlot("bubble", bubbleData)
       }
     }
   )} 
-
 
 //func that is ran when page loads
 function init() {
