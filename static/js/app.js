@@ -21,23 +21,34 @@ function buildCharts(sample) {
   Plotly.d3.json(`/samples/${sample}`, function(error, response) { 
     if (error) {alert(error)}
     else {
-      var labels = response.otu_ids.slice(0,10);
-      var values = response.sample_values.slice(0,10);
-      var hovers = response.otu_labels.slice(0,10);
-
-      var data = [{
-        values: values,
-        labels: labels,
+      var pieData = [{
+        values: response.sample_values.slice(0,10),
+        labels: response.otu_ids.slice(0,10),
         type: 'pie',
-        text: hovers,
+        text: response.otu_labels.slice(0,10),
         hoverinfo: 'label+text+value+percent',
         textinfo: 'percent'
       }];
 
-      Plotly.newPlot("pie", data)
+      Plotly.newPlot("pie", pieData)
+
+      var bubbleData =[{
+        x: response.otu_ids,
+        y: response.sample_values,
+        text: response.otu_ids,
+        mode: 'markers',
+        marker: {
+            size: response.sample_values,
+            color: response.otu_ids,
+            colorscale: "Earth",
+        }
+      }]  
+      
+        Plotly.newPlot("bubble", bubbleData)
+      }
     }
-  }) 
-}
+  )} 
+
 
 //func that is ran when page loads
 function init() {
