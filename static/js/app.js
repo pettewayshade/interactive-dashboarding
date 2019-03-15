@@ -1,24 +1,20 @@
+//func to get metadata and populate it
 function buildMetadata(sample) {
-
-  // @TODO: Complete the following function that builds the metadata panel
-
-  // Use `d3.json` to fetch the metadata for a sample
-    // Use d3 to select the panel with id of `#sample-metadata`
-
-    // Use `.html("") to clear any existing metadata
-
-    // Use `Object.entries` to add each key and value pair to the panel
-    // Hint: Inside the loop, you will need to use d3 to append new
-    // tags for each key-value in the metadata.
-
-    // BONUS: Build the Gauge Chart
-    // buildGauge(data.WFREQ);
-	var selector = d3.select("sample-metadata");
-	d3.json("/metadata/<sample>").then(function(data) {
-		switch (sample)
-	})
-
-
+  Plotly.d3.json(`/metadata/${sample}`, function(error, response){
+    if (error) {alert(error)}
+    else {
+      var data = response;
+      var selector = d3.select('#sample-metadata');
+      selector.html("")
+      var keys = ["ETHNICITY", "GENDER", "AGE", "LOCATION", "BBTYPE", 
+                    "WFREQ", "sample"];
+      keys.forEach((key) => {
+        var ul = selector.append('ul')
+        var li = ul.append('li')
+        li.text(`${key}: ${data[key]}`)
+      })
+    }
+  })
 }
 
 function buildCharts(sample) {
